@@ -1,0 +1,22 @@
+{
+    "development":{
+        "services": {
+            "api": {
+                "url" : "http://localhost:9000/"
+            },
+            "sanger_app":{
+                "url" : "http://localhost:9006/"
+            }
+        }
+    },
+    "production":{
+        "services": {
+            "api": {
+                "url" : "http://www.production_api_url.com/"
+            },
+            "sanger_app":{
+                "url" : "http://www.production_sanger_url.com/"
+            }
+        }
+    }
+}
