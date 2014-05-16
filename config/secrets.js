@@ -2,7 +2,7 @@ module.exports = {
 
   db: process.env.MONGODB|| 'mongodb://localhost:27017/test',
 
-  sessionSecret: process.env.SESSION_SECRET || 'Your Session Secret goes here',
+  sessionSecret: process.env.SESSION_SECRET || 'Secret Sessions stroe',
 
   mailgun: {
     login: process.env.MAILGUN_LOGIN || 'postmaster@sandbox697fcddc09814c6b83718b9fd5d4e5dc.mailgun.org',

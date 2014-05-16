@@ -25,7 +25,9 @@
               if user.profile.picture
                 img.profile-image(src='#{user.profile.picture}')
               else
-                img.profile-image(src='#{user.gravatar(60)}')
+                  //TODO - fix this...
+                  img.profile-image(src='#{user.profile.picture}')
+                //img.profile-image(src='#{user.gravatar(60)}')
               | #{user.profile.name || user.email || user.id}&nbsp;
               i.caret
             ul.dropdown-menu

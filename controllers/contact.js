@@ -15,7 +15,8 @@ var smtpTransport = nodemailer.createTransport('SMTP', {
 
 exports.getContact = function(req, res) {
   res.render('contact', {
-    title: 'Contact'
+    title: 'Contact',
+    user: req.session.currentUser
   });
 };
 

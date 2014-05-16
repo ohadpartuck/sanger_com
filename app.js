@@ -5,6 +5,7 @@
 ROOT = __dirname;
 ENV  = (process.env.NODE_ENV || 'DEVELOPMENT').toLowerCase();
 
+require('./config/generic_methods/generic_methods.js');
 var _ = require('underscore');
 var express = require('express');
 var cookieParser = require('cookie-parser');
@@ -103,15 +104,6 @@ app.use(function(req, res, next) {
 });
 app.use(flash());
 app.use(express.static(path.join(__dirname, 'public'), { maxAge: week }));
-app.use(function(req, res, next) {
-  // Keep track of previous URL to redirect back to
-  // original destination after a successful login.
-  if (req.method !== 'GET') return next();
-  var path = req.path.split('/')[1];
-  if (/(auth|login|logout|signup)$/i.test(path)) return next();
-  req.session.returnTo = req.path;
-  next();
-});
 
 /**
  * Application routes.
@@ -142,20 +134,13 @@ app.get('/account/unlink/:provider', passportConf.isAuthenticated, userControlle
 // * OAuth routes for sign-in.
 // */
 
-//app.get('/auth/instagram', passport.authenticate('instagram'));
-//app.get('/auth/instagram/callback', passport.authenticate('instagram', { failureRedirect: '/login' }), function(req, res) {
-//  res.redirect(req.session.returnTo || '/');
-//});
 app.get('/auth/facebook', passport.authenticate('facebook', { scope: ['email', 'user_location'] }));
-//app.get('/auth/facebook/callback', passport.authenticate('facebook', { failureRedirect: '/login' }), function(req, res) {
-//  res.redirect(req.session.returnTo || '/');
-//});
 
-app.get('/auth/facebook/callback', function(req, res) {
-
-    postman.get('api', 'sanger/v1/users/auth/facebook/callback?' + queryString.stringify(req.query));
-    res.redirect('/login');
-//    res.json({result: 'sent to log in, check in a sec for status.'})
+app.get('/auth/:providerName/callback', function(req, res, next) {
+    postman.get('api', 'sanger/v1/users/auth/' + req.params.providerName + '/callback?' + queryString.stringify(req.query), null,
+        GenericOnGetError,
+        GenericOnLoginSuccess,
+        {passToCallbacks:{req: req, res: res, next: next}});
 });
 
 
