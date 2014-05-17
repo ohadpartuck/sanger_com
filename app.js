@@ -135,6 +135,12 @@ app.get('/account/unlink/:provider', passportConf.isAuthenticated, userControlle
 // */
 
 app.get('/auth/facebook', passport.authenticate('facebook', { scope: ['email', 'user_location'] }));
+// not relevant for now until i'll create an app in theses
+//app.get('/auth/google', passport.authenticate('google', { scope: 'profile email' }));
+//app.get('/auth/instagram', passport.authenticate('instagram'));
+//app.get('/auth/github', passport.authenticate('github'));
+//app.get('/auth/twitter', passport.authenticate('twitter'));
+//app.get('/auth/linkedin', passport.authenticate('linkedin', { state: 'SOME STATE' }));
 
 app.get('/auth/:providerName/callback', function(req, res, next) {
     postman.get('api', 'sanger/v1/users/auth/' + req.params.providerName + '/callback?' + queryString.stringify(req.query), null,

@@ -9,7 +9,7 @@ GenericOnLoginSuccess = function(params){
         req.session.currentUser = user;
         //in the response to the app's client - set the session cookie
 //        console.log(response.headers['set-cookie']);
-        res.redirect('home', {
+        res.render('home', {
             user: user
         });
     }else{

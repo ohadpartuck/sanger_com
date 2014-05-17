@@ -33,7 +33,7 @@ exports.postLogin = function(req, res, next) {
     //TODO add validations on the view in js
     postman.post('api', appPrefix +  'login', req.body,
         GenericOnGetError,
-        GenericOnLogoutSuccess,
+        GenericOnLoginSuccess,
         {passToCallbacks:{req: req, res: res, next: next}});
 };
 
