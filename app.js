@@ -144,7 +144,7 @@ app.get('/auth/:providerName/callback', function(req, res, next) {
 });
 
 
-app.get('/', homeController.allParams);
+app.get('/app_vars', homeController.allParams);
 
 /**
  * 500 Error Handler.
