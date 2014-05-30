@@ -7,8 +7,6 @@ GenericOnLoginSuccess = function(params){
     if (isErrorFreeResponse(responseBody)){
         var user = responseBody['user'];
         req.session.currentUser = user;
-        //in the response to the app's client - set the session cookie
-//        console.log(response.headers['set-cookie']);
         res.render('home', {
             user: user
         });

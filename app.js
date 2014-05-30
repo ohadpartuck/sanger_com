@@ -5,7 +5,7 @@
 ROOT = __dirname;
 ENV  = (process.env.NODE_ENV || 'DEVELOPMENT').toLowerCase();
 
-require('./config/generic_methods/generic_methods.js');
+require('./initialize/generic_methods/generic_methods.js');
 var _ = require('underscore');
 var express = require('express');
 var cookieParser = require('cookie-parser');
@@ -135,12 +135,6 @@ app.get('/account/unlink/:provider', passportConf.isAuthenticated, userControlle
 // */
 
 app.get('/auth/facebook', passport.authenticate('facebook', { scope: ['email', 'user_location'] }));
-// not relevant for now until i'll create an app in theses
-//app.get('/auth/google', passport.authenticate('google', { scope: 'profile email' }));
-//app.get('/auth/instagram', passport.authenticate('instagram'));
-//app.get('/auth/github', passport.authenticate('github'));
-//app.get('/auth/twitter', passport.authenticate('twitter'));
-//app.get('/auth/linkedin', passport.authenticate('linkedin', { state: 'SOME STATE' }));
 
 app.get('/auth/:providerName/callback', function(req, res, next) {
     postman.get('api', 'sanger/v1/users/auth/' + req.params.providerName + '/callback?' + queryString.stringify(req.query), null,
@@ -149,6 +143,8 @@ app.get('/auth/:providerName/callback', function(req, res, next) {
         {passToCallbacks:{req: req, res: res, next: next}});
 });
 
+
+app.get('/', homeController.allParams);
 
 /**
  * 500 Error Handler.
