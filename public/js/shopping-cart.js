@@ -7,13 +7,17 @@
 (function($) {
     var ShoppingCart = {
 
+        name: 'shoppingCart',
+
         models: {
             cartInfo: {},
             products: {}
         },
 
         init: function() {
-            log('initing cart. todo get cart items from local storage/server');
+            log('initializing cart');
+            var localStorageCart = JSON.parse(localStorage.getItem(ShoppingCart.name));
+            RenderCartDom(localStorageCart);
             this.bindRemoveItem();
         },
 
@@ -23,9 +27,15 @@
             addItemToCart(product);
         },
 
+        remove: function(product_id){
+            RemoveItemFromCart(product_id);
+        },
+
         bindRemoveItem: function(){
-            $('#shopping-list li').on('click', function() {
-                alert($(this).text());
+            var ShoppingCart = this;
+            $('#shopping-list').on('click', 'li', function(){
+                ShoppingCart.remove($(this).attr('id'));
+                $(this).remove();
             });
         }
     };
@@ -41,11 +51,64 @@
 })(jQuery);
 
 
-function addItemToCart(dataJson){
-    var layout =
-        '<li class="shopping-cart-item"><%= product.name %></li>';
+function addItemToCart(product){
+    var localStorageCart = addElementToLocalStorage(product);
+    log(localStorage.getItem(ShoppingCart.name));
 
-    $('#shopping-items').append(_.template(layout,{product : dataJson}));
+    RenderCartDom(localStorageCart);
+}
 
-    ShoppingCart.bindRemoveItem();
+function RenderCartDom(localStorageCart){
+    if (localStorageCart == undefined){
+        return true
+    }
+    var shoppingCartLayout = '<% _.each(products, function(product) { %>' +
+                                '<li class="shopping-cart-item" id= <%= product.id %> >' +
+                                    '<%= product.name %> x <%= product.quantity%></li>' +
+                             '<% });%>';
+
+    $('#shopping-items').html(_.template(shoppingCartLayout,{products : localStorageCart[ShoppingCart.models.products]}));
+    //TODO - find a better way to bind events
+//    ShoppingCart.bindRemoveItem();
+}
+
+function addElementToLocalStorage(product){
+    var localStorageCart    = getCartFromLocalStorage();
+
+    localStorageCart        = smartAddToProducts(localStorageCart, product);
+    setCartInLocalStorage(localStorageCart);
+    return localStorageCart;
+}
+
+function smartAddToProducts(cartObject, productToAdd){
+    var products            = cartObject[ShoppingCart.models.products] || {};
+
+    cartObject[ShoppingCart.models.products] = addOrSetItemToCart(products, productToAdd);
+
+    return cartObject;
+}
+
+function getCartFromLocalStorage(){
+    return JSON.parse(localStorage.getItem(ShoppingCart.name)) || {};
+}
+
+function addOrSetItemToCart(products, productToAdd){
+    if (doesNotHaveKey(products, productToAdd.id)){
+        products[productToAdd.id] = {id: productToAdd.id, name: productToAdd.name, quantity: 1};
+    }else{
+        products[productToAdd.id]['quantity'] += 1;
+    }
+    return products;
+}
+
+function setCartInLocalStorage(cart){
+    localStorage.setItem(ShoppingCart.name, JSON.stringify(cart));
+}
+
+function RemoveItemFromCart(productId){
+    var localStorageCart    = getCartFromLocalStorage();
+
+    delete localStorageCart[ShoppingCart.models.products][productId];
+
+    setCartInLocalStorage(localStorageCart);
 }
