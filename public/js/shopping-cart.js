@@ -59,18 +59,50 @@ function addItemToCart(product){
 }
 
 function RenderCartDom(localStorageCart){
-    if (localStorageCart == undefined){
-        return true
-    }
-    var shoppingCartLayout = '<% _.each(products, function(product) { %>' +
-                                '<li class="shopping-cart-item" id= <%= product.id %> >' +
-                                    '<%= product.name %> x <%= product.quantity%></li>' +
-                             '<% });%>';
+    if (localStorageCart == undefined) return true;
 
-    $('#shopping-items').html(_.template(shoppingCartLayout,{products : localStorageCart[ShoppingCart.models.products]}));
-    //TODO - find a better way to bind events
-//    ShoppingCart.bindRemoveItem();
+
+    var productsHtml    = productsDom(localStorageCart);
+    var priceHtml       = priceDom(localStorageCart);
+
+    $('#shopping-items').html(productsHtml + priceHtml);
+
 }
+function productsDom(localStorageCart){
+    var ProductsLayout = '<% _.each(products, function(product) { %>' +
+                                '<li id= <%= product.id %> >' +
+                                    '<div class="shopping-cart-item">' +
+                                         '<%= product.quantity %> <%= product.name %>  - <%= product.price * product.quantity %>' +
+                                    '</div>' +
+                                '</li>' +
+                           '<% });%>';
+
+
+    return _.template(ProductsLayout,{products : localStorageCart[ShoppingCart.models.products]});
+}
+
+function priceDom(localStorageCart){
+    var totalPriceHtml;
+
+    //TODO better performance with adding to total price and not recalcing every time
+    totalPriceHtml = calcTotalPrice(localStorageCart);
+    return totalPriceHtml;
+}
+
+function calcTotalPrice(localStorageCart){
+    var products    = localStorageCart[ShoppingCart.models.products];
+    var totalPrice  = 0;
+    _.each(products, function(product) {
+        totalPrice += (product.price || 0) * product.quantity;
+    });
+
+    if (totalPrice == 0){
+        return '';
+    }else{
+        return '<div id="shopping-cart-price"> Total Price '+ totalPrice +'$</div>'
+    }
+}
+
 
 function addElementToLocalStorage(product){
     var localStorageCart    = getCartFromLocalStorage();
@@ -94,7 +126,8 @@ function getCartFromLocalStorage(){
 
 function addOrSetItemToCart(products, productToAdd){
     if (doesNotHaveKey(products, productToAdd.id)){
-        products[productToAdd.id] = {id: productToAdd.id, name: productToAdd.name, quantity: 1};
+        var productToSave = $.extend(productToAdd, {quantity: 1});
+        products[productToAdd.id] = productToSave;
     }else{
         products[productToAdd.id]['quantity'] += 1;
     }
