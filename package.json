@@ -32,7 +32,8 @@
     "request": "^2.34.0",
     "uglify-js": "^2.4.13",
     "underscore": "^1.6.0",
-    "rest_postman": "^0.1.4"
+    "rest_postman": "^0.1.4",
+    "i18n": "^0.4.1"
   },
   "devDependencies": {
     "mocha": "^1.18.2",
