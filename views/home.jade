@@ -1,8 +1,9 @@
 extends layout
 
 block content
-  div(id="shopping-list", class="container")
+  div(id="shopping-searcher", class="container")
     div(class="col-md-6")
-      h1 Manage Your Shopping List
       input(class="col-md-6", data-provide="typeahead", autocomplete="off", id="shopping-input", type="text", placeholder="Type Product's name")
-
+    div(id="shopping-list", class="col-md-12")
+      h1 Your Shopping List
+      div(id="shopping-items")

@@ -10,6 +10,9 @@
  */
 
 //= require lib/jquery-2.1.0.min
+//= require lib/underscore-1.6.0.min
 //= require lib/bootstrap.min
 //= require lib/typeahead-3.0.3
+//= require global-methods
 //= require main
+//= require shopping-cart
